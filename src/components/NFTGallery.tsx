@@ -33,17 +33,20 @@ export default function NFTGallery() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10">
-      <form onSubmit={handlefetch} className="flex gap-2 mb-4">
+      <form
+        onSubmit={handlefetch}
+        className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 w-full"
+      >
         <input
           type="text"
           placeholder="Enter Base wallet address"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 p-2 border rounded"
+          className="flex-1 px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all font-medium shadow-md"
         >
           View NFTs
         </button>
@@ -51,9 +54,6 @@ export default function NFTGallery() {
 
       {isLoading && <p>Loading NFTs...</p>}
       {error && <p className="text-red-500">{error}</p>}
-      {!isLoading && nfts.length === 0 && input && (
-        <p>No NFTs found for this wallet address.</p>
-      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {nfts.map((nft, idx) => (

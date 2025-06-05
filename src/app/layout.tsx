@@ -2,7 +2,6 @@
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { Providers } from "./Providers";
 
 export const metadata = {
   title: "NFT on Base",
@@ -17,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );
