@@ -2,7 +2,7 @@
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { Providers } from "./providers";
+import { Providers } from "./Providers";
 
 export const metadata = {
   title: "NFT on Base",
