@@ -1,4 +1,5 @@
 import NFTGallery from "@/components/NFTGallery";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -12,10 +13,7 @@ export default function Home() {
         </header>
 
         <NFTGallery />
-
-        <footer className="text-center text-gray-500 mt-12 text-sm">
-          Built with 💙 by Saber
-        </footer>
+   <Footer />
       </div>
     </div>
   );
