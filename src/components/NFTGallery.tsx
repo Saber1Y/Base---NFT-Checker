@@ -12,6 +12,8 @@ export default function NFTGallery() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [hasFetched, setHasFetched] = useState(false); //check if the user has fetched NFTs
+
   const [wrong, setWrong] = useState(false); //check if the address is wrong
 
   const handlefetch = async (e: React.FormEvent) => {
@@ -32,6 +34,10 @@ export default function NFTGallery() {
       setError("");
       const res = await getBaseNFT(input);
       setNfts(res);
+      setHasFetched(true); //set hasFetched to true after fetching NFTs
+      if (res.length === 0) {
+        setError("No NFTs found for this address.");
+      }
     } catch (err) {
       setError("Error displaying NFTs.");
       console.error(err);
@@ -72,9 +78,12 @@ export default function NFTGallery() {
         />
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all font-medium shadow-md"
+          disabled={isLoading}
+          className={`bg-blue-600 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+          } text-white px-6 py-3 rounded-xl transition-all font-medium shadow-md`}
         >
-          View NFTs
+          {isLoading ? "Loading..." : "View NFTs"}
         </button>
       </form>
 
@@ -83,28 +92,63 @@ export default function NFTGallery() {
         results.
       </p>
 
-      {isLoading && <p>Loading NFTs...</p>}
+      {isLoading && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 animate-pulse">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="border p-2 rounded space-y-2">
+              <div className="bg-gray-700 h-48 w-full rounded" />
+              <div className="bg-gray-700 h-4 w-3/4 rounded" />
+            </div>
+          ))}
+        </div>
+      )}
+
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {nfts.map((nft, idx) => (
-          <div key={idx} className="border p-2 rounded">
-            <Image
-              src={normalizeIPFS(nft?.metadata?.image || "/fallback.png")}
-              alt="NFT"
-              width={300}
-              height={300}
-              onError={(e) => {
-                e.currentTarget.src = "/fallback.png";
-              }}
-              className="w-full h-48 object-cover"
-              unoptimized
+      {!isLoading && !error && hasFetched && nfts.length === 0 && (
+        <p className="text-red-500 text-center">
+          No NFTs found for this address.
+        </p>
+      )}
+
+      {isLoading && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="animate-pulse bg-gray-700 rounded p-2 h-60"
             />
-            <div className="mt-2 text-sm font-semibold">
-              {nft?.metadata?.name}
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {nfts.map((nft, idx) => {
+          const imageUrl = normalizeIPFS(nft?.metadata?.image || "");
+          const name = nft?.metadata?.name || `NFT #${idx + 1}`;
+
+          return (
+            <div
+              key={idx}
+              className="border p-2 rounded bg-gray-900 text-white"
+            >
+              <Image
+                src={imageUrl}
+                alt={name}
+                width={300}
+                height={300}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/fallback.png";
+                }}
+                className="w-full h-48 object-cover rounded"
+                unoptimized
+              />
+              <div className="mt-2 text-sm font-semibold text-center truncate">
+                {name}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
